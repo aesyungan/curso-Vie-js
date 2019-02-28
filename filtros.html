@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="main" >
+        <div class="row">
+            <div class="col-md-12">
+               <h2>Filtros</h2>
+            </div>
+            <div class="col-md-6">
+                <button v-on:click="getUsers()" v-if="users.length<=0" class="btn btn-primary">Listar</button>
+               <template v-else>
+                    <ul class="list-group" >
+                        <li class="list-group-item">
+                            <input  class="form-group" v-model="name">
+                        </li>
+                            <li class="list-group-item" v-for="item in buscar">
+                                <img :src="item.picture.large" width="50px" class="rounded-circle">
+                                {{item.name.first}} {{item.name.last}}
+                            </li>
+                        </ul>
+               </template>
+              
+            </div>
+            <div class="col-md-6">
+             <pre class="jumbotron">
+                 {{$data}}
+             </pre>
+            </div>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el:'#main',
+            data:{
+                users:[],
+                name:''
+             },
+             methods: {
+                getUsers:function () {
+                    var urlUser="https://randomuser.me/api/?results=60";
+                    axios.get(urlUser)
+                        .then( (response) =>{
+                            // handle success
+                            console.log(response);
+                             this.users=response.data.results;
+                        })
+                        .catch( (error)=> {
+                            // handle error
+                            console.log(error);
+                        })
+                        .then(()=> {
+                            // always executed
+                        });
+                }
+             },
+             computed: {
+             
+                buscar:function () {
+                    return this.users.filter((item)=>item.name.first.includes(this.name));
+                }
+             }
+            }
+        );
+    </script>
+    
+</body>
+</html>
